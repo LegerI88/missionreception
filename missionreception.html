@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mission Réception – 1EPC1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,500..900&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --concrete:#E3E5E1; --paper:#FBFBF8; --ink:#1B2A47; --ink-soft:#4A5770;
+  --kraft:#B98752; --kraft-lite:#EAD8C0; --safety:#F2C230; --stamp:#B8322A; --ok:#2C7A4B; --line:#C9CCC6;
+  --focus:#1F5FD1;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --concrete:#1A1F29; --paper:#242B38; --ink:#EEF0F4; --ink-soft:#AEB6C6;
+    --kraft:#D3A571; --kraft-lite:#3B3226; --safety:#F2C230; --stamp:#F0776E; --ok:#6BCB93; --line:#3A4252; --focus:#7FAAFF;
+  }
+}
+:root[data-theme="dark"]{
+  --concrete:#1A1F29; --paper:#242B38; --ink:#EEF0F4; --ink-soft:#AEB6C6;
+  --kraft:#D3A571; --kraft-lite:#3B3226; --safety:#F2C230; --stamp:#F0776E; --ok:#6BCB93; --line:#3A4252; --focus:#7FAAFF;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--concrete);color:var(--ink);font-family:"Atkinson Hyperlegible",Verdana,system-ui,sans-serif;font-size:1.0625rem;line-height:1.55}
+h1,h2,h3{font-family:Archivo,"Arial Narrow",Arial,sans-serif;line-height:1.1;margin:0 0 .5em}
+h1{font-size:clamp(2.2rem,7vw,4rem);font-weight:900;font-stretch:80%;letter-spacing:-.01em}
+h2{font-size:clamp(1.6rem,4.5vw,2.3rem);font-weight:800;font-stretch:85%}
+h3{font-size:1.2rem;font-weight:700}
+p{margin:0 0 .9em;max-width:70ch}
+button,select,input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.wrap{max-width:900px;margin:0 auto;padding:0 18px 60px}
+
+/* bandeau quai de chargement */
+.dock{position:sticky;top:0;z-index:10;background:var(--ink);color:var(--paper);}
+:root[data-theme="dark"] .dock{background:#0E131C}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .dock{background:#0E131C;color:#EEF0F4}}
+.dock-in{max-width:900px;margin:0 auto;padding:10px 18px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.dock b{font-family:Archivo,Arial,sans-serif;font-stretch:80%;font-size:1.1rem}
+.dock .who{opacity:.85;font-size:.95rem}
+.dock .score{margin-left:auto;font-family:Archivo,Arial,sans-serif;font-weight:800}
+.stripe{height:10px;background:repeating-linear-gradient(-45deg,var(--safety) 0 14px,#1B1B1B 14px 28px)}
+.track{display:flex;gap:4px;max-width:900px;margin:0 auto;padding:10px 18px 0}
+.track button{flex:1;min-width:0;height:34px;border:2px solid var(--ink);background:var(--paper);cursor:pointer;font-family:Archivo,Arial,sans-serif;font-weight:800;font-size:.9rem;border-radius:3px}
+.track button.done{background:var(--ok);color:#fff;border-color:var(--ok)}
+.track button.here{background:var(--safety);color:#1B1B1B;border-color:#1B1B1B}
+.track button:disabled{opacity:.45;cursor:not-allowed}
+
+/* hero */
+.hero{padding:34px 0 10px}
+.hero .truck{font-size:3.2rem;line-height:1}
+.hero p.lead{font-size:1.2rem}
+
+/* sections */
+.mission{background:var(--paper);border:2px solid var(--ink);border-radius:4px;padding:22px 20px;margin-top:20px}
+.mhead{display:flex;gap:14px;align-items:baseline;flex-wrap:wrap;margin-bottom:6px}
+.mnum{font-family:Archivo,Arial,sans-serif;font-weight:900;font-stretch:75%;font-size:3rem;color:var(--kraft);line-height:.9}
+.time{display:inline-block;background:var(--safety);color:#1B1B1B;font-weight:700;padding:2px 10px;border-radius:2px;font-size:.9rem}
+.brief{background:var(--kraft-lite);border-left:6px solid var(--kraft);padding:12px 14px;margin:14px 0}
+.brief p:last-child{margin:0}
+.tip{font-size:.95rem;color:var(--ink-soft)}
+
+/* QCM */
+.q{border-top:1px dashed var(--line);padding:14px 0}
+.q:first-child{border-top:0}
+.q .qt{font-weight:700;margin-bottom:8px}
+.opts{display:grid;gap:8px}
+.opt{display:block;width:100%;text-align:left;padding:10px 12px;border:2px solid var(--line);background:transparent;border-radius:4px;cursor:pointer}
+.opt:hover{border-color:var(--ink-soft)}
+.opt.sel{border-color:var(--ink);background:var(--kraft-lite)}
+.opt.right{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 18%,transparent)}
+.opt.wrong{border-color:var(--stamp);background:color-mix(in srgb,var(--stamp) 14%,transparent)}
+.expl{margin-top:8px;padding:8px 12px;border-left:4px solid var(--ok);font-size:.97rem;display:none}
+.expl.bad{border-left-color:var(--stamp)}
+.show .expl{display:block}
+
+.btn{display:inline-block;padding:12px 20px;border:2px solid var(--ink);background:var(--ink);color:var(--paper);font-family:Archivo,Arial,sans-serif;font-weight:800;font-size:1.05rem;border-radius:4px;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;align-items:center}
+.result{font-weight:700}
+
+/* documents style formulaire carbone */
+.doc{border:2px solid var(--ink);background:var(--paper);margin:12px 0;border-radius:2px}
+.doc .dh{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:8px 12px;border-bottom:2px solid var(--ink);font-family:Archivo,Arial,sans-serif;font-weight:800}
+.doc.bl .dh{background:#DCE6F5;color:#1B2A47}
+.doc.bc .dh{background:#F3E7B8;color:#1B2A47}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.97rem}
+th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:middle}
+th{font-family:Archivo,Arial,sans-serif;font-weight:700;font-size:.9rem}
+td.n,th.n{text-align:right}
+select,input[type=number],input[type=text],textarea{border:2px solid var(--line);background:var(--paper);border-radius:4px;padding:8px}
+select{min-width:10em}
+input[type=number]{width:6em}
+textarea{width:100%;min-height:130px}
+.cellok{background:color-mix(in srgb,var(--ok) 18%,transparent)}
+.cellko{background:color-mix(in srgb,var(--stamp) 14%,transparent)}
+
+/* ordre */
+.pool,.seq{display:grid;gap:8px;margin:10px 0}
+.chip{padding:10px 12px;border:2px dashed var(--kraft);background:var(--kraft-lite);border-radius:4px;cursor:pointer;text-align:left;width:100%}
+.seq .chip{border-style:solid;cursor:default}
+.seq .chip span{font-family:Archivo,Arial,sans-serif;font-weight:900;margin-right:8px}
+.seq-empty{color:var(--ink-soft);font-style:italic}
+
+/* cartes incident */
+.incidents{display:grid;gap:14px}
+.card{border:2px solid var(--ink);border-radius:4px;padding:14px;position:relative;background:var(--paper)}
+.card .choices{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.card .choices button{flex:1 1 150px;padding:10px;border:2px solid var(--line);background:transparent;border-radius:4px;cursor:pointer;font-weight:700}
+.card .choices button.sel{border-color:var(--ink);background:var(--kraft-lite)}
+.card .choices button.right{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 18%,transparent)}
+.card .choices button.wrong{border-color:var(--stamp);background:color-mix(in srgb,var(--stamp) 14%,transparent)}
+.stamp{position:absolute;top:10px;right:12px;border:3px solid var(--stamp);color:var(--stamp);font-family:Archivo,Arial,sans-serif;font-weight:900;font-stretch:80%;padding:2px 8px;transform:rotate(-8deg);border-radius:3px;display:none}
+.card.show .stamp{display:block;animation:thump .35s ease-out}
+@keyframes thump{from{transform:rotate(-8deg) scale(1.8);opacity:0}to{transform:rotate(-8deg) scale(1);opacity:1}}
+@media (prefers-reduced-motion: reduce){.card.show .stamp{animation:none}}
+
+/* bilan */
+.bilan table td:last-child{text-align:right;font-weight:700}
+.eval-row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;border-bottom:1px dashed var(--line);padding:8px 0}
+.eval-row .lv{display:flex;gap:6px}
+.eval-row .lv button{padding:6px 10px;border:2px solid var(--line);background:transparent;border-radius:4px;cursor:pointer;font-size:.9rem}
+.eval-row .lv button.sel{border-color:var(--ink);background:var(--safety);color:#1B1B1B}
+.teacher{margin-top:28px;background:var(--paper);border:2px dashed var(--ink-soft);border-radius:4px;padding:14px 18px}
+.teacher summary{cursor:pointer;font-family:Archivo,Arial,sans-serif;font-weight:800;font-size:1.1rem}
+.teacher li{margin-bottom:.4em}
+.src a{color:var(--focus);word-break:break-word}
+.hidden{display:none}
+@media (max-width:560px){.track button{font-size:.8rem;height:30px}.mission{padding:16px 14px}.eval-row{grid-template-columns:1fr}}
+@media print{.dock,.track,.stripe,.actions,.teacher,.no-print{display:none!important}body{background:#fff;color:#000}.mission{border:1px solid #000}}
+</style>
+</head>
+<body>
+<div class="dock">
+  <div class="dock-in">
+    <b>🚚 Mission Réception</b><span class="who" id="who"></span>
+    <span class="score" id="score">0 pt</span>
+  </div>
+  <div class="stripe"></div>
+</div>
+<nav class="track" id="track" aria-label="Étapes de la mission"></nav>
+
+<main class="wrap" id="app"></main>
+
+<script>
+(function(){
+const KEY='mission-reception-1epc1-v1';
+let S={name:'',cur:0,res:{},evals:{}};
+try{const raw=localStorage.getItem(KEY);if(raw){S=Object.assign(S,JSON.parse(raw));}}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+
+const MISSIONS=[
+ {t:'Prise de poste',d:5},
+ {t:'Échauffement',d:10},
+ {t:'Les documents',d:15},
+ {t:'Contrôle quantitatif',d:25},
+ {t:'Contrôle qualitatif',d:20},
+ {t:'Rédiger les réserves',d:15},
+ {t:'Ranger le stock',d:15},
+ {t:'Bilan',d:15}
+];
+const app=document.getElementById('app');
+const track=document.getElementById('track');
+
+function total(){let s=0,m=0;for(const k in S.res){s+=S.res[k].s;m+=S.res[k].m;}return {s,m};}
+function header(){
+  document.getElementById('who').textContent=S.name?('· '+S.name):'';
+  const t=total();document.getElementById('score').textContent=t.s+' / '+t.m+' pts';
+  track.innerHTML='';
+  MISSIONS.forEach((m,i)=>{
+    const b=document.createElement('button');
+    b.textContent=i===0?'Départ':i;
+    b.title=m.t;b.setAttribute('aria-label','Étape '+i+' : '+m.t);
+    if(S.res[i]||(i===0&&S.name))b.classList.add('done');
+    if(i===S.cur)b.classList.add('here');
+    const reachable=i===0||S.name&&(i<=maxReached());
+    b.disabled=!reachable;
+    b.onclick=()=>go(i);
+    track.appendChild(b);
+  });
+}
+function maxReached(){let m=1;for(let i=1;i<MISSIONS.length;i++){if(S.res[i])m=i+1;}return Math.min(m,MISSIONS.length-1);}
+function go(i){S.cur=i;save();render();window.scrollTo({top:0});}
+function el(html){const d=document.createElement('div');d.innerHTML=html.trim();return d.firstElementChild;}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+function shell(i,brief){
+  const m=MISSIONS[i];
+  const sec=el(`<section class="mission">
+    <div class="mhead"><span class="mnum">${i}</span><h2>${m.t}</h2><span class="time">⏱ ${m.d} min</span></div>
+    ${brief?`<div class="brief">${brief}</div>`:''}
+    <div class="body"></div>
+  </section>`);
+  app.appendChild(sec);return sec.querySelector('.body');
+}
+function nextBar(body,i,getScore,onValidate){
+  const bar=el(`<div class="actions"><button class="btn val">Valider mes réponses</button><span class="result"></span><button class="btn ghost nx hidden">Mission suivante</button></div>`);
+  body.appendChild(bar);
+  const val=bar.querySelector('.val'),nx=bar.querySelector('.nx'),r=bar.querySelector('.result');
+  function showDone(){val.classList.add('hidden');nx.classList.remove('hidden');r.textContent='Score : '+S.res[i].s+' / '+S.res[i].m;}
+  val.onclick=()=>{
+    const res=getScore();if(res===null)return;
+    S.res[i]={s:res.s,m:res.m};save();header();showDone();onValidate&&onValidate();
+  };
+  nx.onclick=()=>go(i+1);
+  if(S.res[i]){showDone();}
+  return bar;
+}
+
+/* ---------- QCM générique ---------- */
+function qcm(body,qs,locked){
+  const box=el('<div></div>');body.appendChild(box);
+  const picks=qs.map(()=>null);
+  qs.forEach((q,qi)=>{
+    const w=el(`<div class="q"><div class="qt">${qi+1}. ${q.q}</div><div class="opts"></div><div class="expl"></div></div>`);
+    const opts=w.querySelector('.opts');
+    q.o.forEach((o,oi)=>{
+      const b=el(`<button class="opt" type="button">${o}</button>`);
+      b.onclick=()=>{if(w.dataset.lock)return;picks[qi]=oi;opts.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');};
+      opts.appendChild(b);
+    });
+    w.querySelector('.expl').innerHTML=q.e;
+    box.appendChild(w);
+  });
+  function correct(){
+    if(picks.some(p=>p===null)){alert('Réponds à toutes les questions avant de valider.');return null;}
+    let s=0;
+    box.querySelectorAll('.q').forEach((w,qi)=>{
+      w.dataset.lock=1;w.classList.add('show');
+      const bs=w.querySelectorAll('.opt');
+      bs[qs[qi].a].classList.add('right');
+      if(picks[qi]!==qs[qi].a){bs[picks[qi]].classList.add('wrong');w.querySelector('.expl').classList.add('bad');}else s++;
+    });
+    return {s,m:qs.length};
+  }
+  function reveal(){box.querySelectorAll('.q').forEach((w,qi)=>{w.dataset.lock=1;w.classList.add('show');w.querySelectorAll('.opt')[qs[qi].a].classList.add('right');});}
+  correct.ready=()=>!picks.some(p=>p===null);
+  if(locked)reveal();
+  return correct;
+}
+
+/* ---------- Ordre à cliquer ---------- */
+function orderTask(body,items,locked,label){
+  const box=el(`<div><p class="tip">${label}</p><div class="seq" aria-live="polite"><div class="seq-empty">Clique sur les étiquettes ci-dessous dans le bon ordre.</div></div><div class="pool"></div><button class="btn ghost reset" type="button">Recommencer l'ordre</button></div>`);
+  body.appendChild(box);
+  const seq=box.querySelector('.seq'),pool=box.querySelector('.pool');
+  let chosen=[];
+  function draw(){
+    seq.innerHTML=chosen.length?'':'<div class="seq-empty">Clique sur les étiquettes ci-dessous dans le bon ordre.</div>';
+    chosen.forEach((k,n)=>{seq.appendChild(el(`<div class="chip"><span>${n+1}</span>${esc(items[k])}</div>`));});
+    pool.innerHTML='';
+    order.forEach(k=>{if(chosen.includes(k))return;const b=el(`<button class="chip" type="button">${esc(items[k])}</button>`);b.onclick=()=>{if(box.dataset.lock)return;chosen.push(k);draw();};pool.appendChild(b);});
+  }
+  const order=shuffle(items.map((_,k)=>k));
+  box.querySelector('.reset').onclick=()=>{if(box.dataset.lock)return;chosen=[];draw();};
+  draw();
+  function correct(){
+    if(chosen.length<items.length){alert("Place toutes les étiquettes avant de valider.");return null;}
+    box.dataset.lock=1;box.querySelector('.reset').classList.add('hidden');
+    let s=0;const chips=seq.querySelectorAll('.chip');
+    chosen.forEach((k,n)=>{if(k===n){s++;chips[n].classList.add('cellok');}else{chips[n].classList.add('cellko');chips[n].insertAdjacentHTML('beforeend',` <em>(bonne place : ${k+1})</em>`);}});
+    return {s,m:items.length};
+  }
+  correct.ready=()=>chosen.length===items.length;
+  if(locked){chosen=items.map((_,k)=>k);box.dataset.lock=1;box.querySelector('.reset').classList.add('hidden');draw();seq.querySelectorAll('.chip').forEach(c=>c.classList.add('cellok'));}
+  return correct;
+}
+
+/* ================= MISSIONS ================= */
+function m0(){
+  const hero=el(`<div class="hero"><div class="truck" aria-hidden="true">🚚📦</div>
+    <h1>Mission Réception</h1>
+    <p class="lead">Mardi 6 octobre 2026, 7 h 30. Tu es équipier·ère au supermarché <b>Marché des Lilas</b> (magasin fictif). Le camion du grossiste <b>DistriFrais</b> recule à quai. Ta responsable, Mme Diallo, te confie la réception de la livraison.</p>
+    <p>Ton objectif : contrôler la marchandise, repérer les problèmes, protéger le magasin en cas d'erreur, puis ranger correctement. 7 missions, environ 2 heures.</p></div>`);
+  app.appendChild(hero);
+  const body=shell(0,'<p>Écris ton prénom et l’initiale de ton nom. Ton score s’affichera en haut de l’écran. À la fin, tu montreras l’écran de bilan à ton professeur.</p>');
+  const f=el(`<div><label for="nm"><b>Prénom + initiale</b></label><br><input id="nm" type="text" maxlength="40" autocomplete="off" value="${esc(S.name)}" style="width:min(100%,320px);margin-top:6px"><div class="actions"><button class="btn" type="button">Je prends mon poste</button></div></div>`);
+  body.appendChild(f);
+  f.querySelector('button').onclick=()=>{const v=f.querySelector('input').value.trim();if(!v){alert('Écris ton prénom pour commencer.');return;}S.name=v;save();go(1);};
+}
+
+function m1(){
+  const body=shell(1,'<p>Avant que le livreur ouvre les portes, vérifions que tu connais le vocabulaire de base de la réception.</p>');
+  const qs=[
+   {q:'Qui rédige le <b>bon de commande</b> ?',o:['Le fournisseur','Le magasin (le client qui achète)','Le transporteur'],a:1,e:'Le bon de commande est rédigé par l’acheteur, ici le magasin, et envoyé au fournisseur.'},
+   {q:'Quel document <b>accompagne la marchandise</b> dans le camion ?',o:['Le bon de livraison','La facture','Le ticket de caisse'],a:0,e:'Le bon de livraison (BL) arrive avec la marchandise. C’est lui que l’on contrôle et que l’on signe.'},
+   {q:'La <b>facture</b> sert surtout à…',o:['Lister les produits abîmés','Demander le paiement au magasin','Indiquer où ranger les produits'],a:1,e:'La facture est le document par lequel le fournisseur demande le paiement.'},
+   {q:'Compter le nombre de colis et comparer avec le BL, c’est un contrôle…',o:['Qualitatif','Quantitatif','Financier'],a:1,e:'Quantitatif = la quantité (nombre de colis, de produits).'},
+   {q:'Vérifier l’état des cartons, la température et les dates, c’est un contrôle…',o:['Qualitatif','Quantitatif','Administratif'],a:0,e:'Qualitatif = la qualité et l’état de la marchandise.'},
+   {q:'Une <b>réserve</b>, c’est…',o:['Une pièce où l’on stocke les produits','Une remarque écrite sur le BL pour signaler un problème à la livraison','Une réduction de prix'],a:1,e:'Attention, le mot a deux sens ! En réception, émettre une réserve = écrire sur le bon de livraison le problème constaté. (La réserve est aussi le lieu de stockage.)'}
+  ];
+  const c=qcm(body,qs,!!S.res[1]);nextBar(body,1,c);
+}
+
+function m2(){
+  const body=shell(2,'<p>Mme Diallo pose trois documents sur le bureau. Relie chaque document à la bonne personne et au bon rôle, puis remets les étapes de la réception dans l’ordre.</p>');
+  const docs=[
+    {n:'Bon de commande',w:'Le magasin',r:'Demander des produits au fournisseur'},
+    {n:'Bon de livraison',w:'Le fournisseur',r:'Lister ce qui est livré, à contrôler et signer'},
+    {n:'Facture',w:'Le fournisseur',r:'Demander le paiement'}
+  ];
+  const whoOpts=['Le magasin','Le fournisseur'];
+  const roleOpts=['Demander des produits au fournisseur','Lister ce qui est livré, à contrôler et signer','Demander le paiement'];
+  body.appendChild(el('<h3>Partie A · Les documents</h3>'));
+  const tb=el(`<div class="scroll"><table><thead><tr><th>Document</th><th>Qui l’établit ?</th><th>À quoi sert-il ?</th></tr></thead><tbody></tbody></table></div>`);
+  const tbody=tb.querySelector('tbody');
+  docs.forEach((d,i)=>{
+    tbody.appendChild(el(`<tr><td><b>${d.n}</b></td>
+      <td><select data-k="w${i}"><option value="">— choisir —</option>${whoOpts.map(o=>`<option>${o}</option>`).join('')}</select></td>
+      <td><select data-k="r${i}"><option value="">— choisir —</option>${roleOpts.map(o=>`<option>${o}</option>`).join('')}</select></td></tr>`));
+  });
+  body.appendChild(tb);
+  body.appendChild(el('<h3 style="margin-top:22px">Partie B · Les étapes dans l’ordre</h3>'));
+  const steps=[
+    'Accueillir le livreur et vérifier que la livraison est bien pour notre magasin',
+    'Compter les colis et comparer avec le bon de livraison',
+    'Vérifier l’état des colis, les dates et la température des produits frais et surgelés',
+    'Écrire les réserves précises sur le bon de livraison',
+    'Dater et signer le bon de livraison (le livreur signe aussi)',
+    'Contrôler en détail : comparer bon de commande et bon de livraison',
+    'Ranger les produits, surgelés et produits frais en premier'
+  ];
+  const ord=orderTask(body,steps,!!S.res[2],'Clique sur les étapes, de la première à la dernière.');
+  const locked=!!S.res[2];
+  if(locked){tbody.querySelectorAll('select').forEach(s=>{const k=s.dataset.k,i=+k.slice(1);s.value=k[0]==='w'?docs[i].w:docs[i].r;s.disabled=true;s.parentElement.classList.add('cellok');});}
+  nextBar(body,2,()=>{
+    const sels=[...tbody.querySelectorAll('select')];
+    if(sels.some(s=>!s.value)){alert('Complète tout le tableau de la partie A.');return null;}
+    if(!ord.ready()){alert("Place toutes les étapes de la partie B.");return null;}
+    const o=ord();if(!o)return null;
+    let s=0;
+    sels.forEach(sel=>{const k=sel.dataset.k,i=+k.slice(1);const good=k[0]==='w'?docs[i].w:docs[i].r;sel.disabled=true;
+      if(sel.value===good){s++;sel.parentElement.classList.add('cellok');}else{sel.parentElement.classList.add('cellko');sel.insertAdjacentHTML('afterend',`<div class="tip">Réponse : ${good}</div>`);}});
+    body.appendChild(el('<p class="tip" style="margin-top:12px">À retenir : on contrôle le nombre de colis et leur état <b>devant le livreur</b>, avant de signer. Une fois le BL signé sans réserve, il devient difficile de réclamer.</p>'));
+    return {s:s+o.s,m:sels.length+o.m};
+  });
+}
+
+const LINES=[
+  {ref:'YN4',p:'Yaourts nature 4×125 g',bc:6,bl:6,r:6,ans:'Conforme'},
+  {ref:'JB4',p:'Jambon blanc 4 tranches',bc:5,bl:5,r:4,ans:'Colis manquant'},
+  {ref:'BD250',p:'Beurre doux 250 g',bc:4,bl:4,r:4,ans:'Conforme'},
+  {ref:'PZ4F',p:'Pizza 4 fromages surgelée',bc:3,bl:3,r:3,ans:'Conforme'},
+  {ref:'LDE1',p:'Lait demi-écrémé UHT 1 L',bc:8,bl:10,r:10,ans:'Livré en trop'},
+  {ref:'CPP4',p:'Compote pomme 4×100 g',bc:5,bl:0,r:0,ans:'Erreur de produit',sub:'CPF4 Compote pomme-fraise 4×100 g : 5 colis livrés'}
+];
+function m3(){
+  const body=shell(3,'<p>Le livreur décharge la palette. Tu as le <b>bon de commande</b> envoyé par le magasin, le <b>bon de livraison</b> du fournisseur, et tu comptes toi-même ce qui est réellement descendu du camion.</p><p>Pour chaque ligne, indique ce que tu constates. Les quantités sont en <b>colis</b>.</p>');
+  body.appendChild(el(`<div class="doc bc"><div class="dh"><span>BON DE COMMANDE n° BC-2026-0915</span><span>Marché des Lilas → DistriFrais</span></div><div class="scroll"><table><thead><tr><th>Réf.</th><th>Désignation</th><th class="n">Qté commandée</th></tr></thead><tbody>${LINES.map(l=>`<tr><td>${l.ref}</td><td>${l.p}</td><td class="n">${l.bc}</td></tr>`).join('')}</tbody></table></div></div>`));
+  const blRows=LINES.map(l=>l.sub?`<tr><td>CPF4</td><td>Compote pomme-fraise 4×100 g</td><td class="n">5</td></tr>`:`<tr><td>${l.ref}</td><td>${l.p}</td><td class="n">${l.bl}</td></tr>`).join('');
+  body.appendChild(el(`<div class="doc bl"><div class="dh"><span>BON DE LIVRAISON n° BL-88412</span><span>DistriFrais · livreur : Karim</span></div><div class="scroll"><table><thead><tr><th>Réf.</th><th>Désignation</th><th class="n">Qté livrée</th></tr></thead><tbody>${blRows}</tbody></table></div><p style="padding:6px 12px;margin:0"><b>Nombre total de colis indiqué : 33</b></p></div>`));
+  body.appendChild(el('<h3 style="margin-top:18px">Ton comptage sur le quai</h3>'));
+  const counted=LINES.map(l=>l.sub?{ref:'CPF4',p:'Compote pomme-fraise 4×100 g',r:5}:{ref:l.ref,p:l.p,r:l.r});
+  const opts=['Conforme','Colis manquant','Livré en trop','Erreur de produit'];
+  const tb=el(`<div class="scroll"><table><thead><tr><th>Produit commandé</th><th class="n">Colis comptés</th><th>Ton constat</th></tr></thead><tbody>${LINES.map((l,i)=>`<tr><td>${l.ref} · ${l.p}</td><td class="n">${l.sub?'0 (mais 5 colis CPF4)':counted[i].r}</td><td><select data-i="${i}"><option value="">— choisir —</option>${opts.map(o=>`<option>${o}</option>`).join('')}</select></td></tr>`).join('')}</tbody></table></div>`);
+  body.appendChild(tb);
+  body.appendChild(el(`<div style="margin-top:14px;display:grid;gap:10px">
+    <label>Combien de colis as-tu comptés au total ? <input type="number" id="q3a" min="0"></label>
+    <label>Combien de colis manque-t-il par rapport au BL ? <input type="number" id="q3b" min="0"></label>
+  </div>`));
+  body.appendChild(el('<h3 style="margin-top:18px">Et maintenant ?</h3>'));
+  const qs=[
+   {q:'Le fournisseur a livré 10 colis de lait au lieu des 8 commandés. Que fais-tu ?',o:['Je les range, c’est un cadeau','Je le signale à ma responsable, qui décide d’accepter ou de refuser le surplus','Je jette les 2 colis en trop'],a:1,e:'Un écart entre la commande et la livraison se traite selon les consignes du magasin : on le signale au responsable. Le surplus sera facturé s’il est accepté.'},
+   {q:'Des compotes pomme-fraise sont livrées à la place des compotes pomme. C’est…',o:['Une erreur de produit (de référence) à signaler','Normal, c’est presque pareil','Un colis manquant seulement'],a:0,e:'La référence livrée n’est pas celle commandée : c’est une erreur de livraison. On la signale au responsable (il peut accepter ou refuser selon les consignes).'}
+  ];
+  const c=qcm(body,qs,!!S.res[3]);
+  const locked=!!S.res[3];
+  const sels=[...tb.querySelectorAll('select')];
+  if(locked){sels.forEach(s=>{s.value=LINES[+s.dataset.i].ans;s.disabled=true;s.parentElement.classList.add('cellok');});body.querySelector('#q3a').value=32;body.querySelector('#q3b').value=1;}
+  nextBar(body,3,()=>{
+    if(sels.some(s=>!s.value)){alert('Choisis un constat pour chaque ligne.');return null;}
+    const a=body.querySelector('#q3a').value,b=body.querySelector('#q3b').value;
+    if(a===''||b===''){alert('Réponds aux deux questions de comptage.');return null;}
+    if(!c.ready()){alert('Réponds aux deux dernières questions.');return null;}
+    const q=c();if(!q)return null;
+    let s=0;
+    sels.forEach(sel=>{const g=LINES[+sel.dataset.i].ans;sel.disabled=true;if(sel.value===g){s++;sel.parentElement.classList.add('cellok');}else{sel.parentElement.classList.add('cellko');sel.insertAdjacentHTML('afterend',`<div class="tip">Réponse : ${g}</div>`);}});
+    const A=+a===32,B=+b===1;s+=A+B;
+    body.appendChild(el(`<div class="brief"><p><b>Correction du comptage :</b> 6 + 4 + 4 + 3 + 10 + 5 = <b>32 colis</b> comptés. Le BL en annonce 33, donc <b>1 colis manque</b> (jambon blanc). ${A&&B?'Bravo, tout juste.':'Refais le calcul ligne par ligne si tu t’es trompé·e.'}</p></div>`));
+    return {s:s+q.s,m:sels.length+2+q.m};
+  });
+}
+
+const INC=[
+ {t:'Pizzas surgelées',d:'Tu mesures la température d’un colis de pizzas surgelées : le thermomètre affiche <b>−9 °C</b>. Les pizzas sont un peu molles.',a:2,st:'REFUSÉ',e:'Un produit surgelé doit être maintenu à −18 °C ou moins. La réglementation européenne tolère seulement de brèves remontées de 3 °C au maximum pendant le transport. À −9 °C, la chaîne du froid est rompue : on refuse et on l’écrit sur le BL.'},
+ {t:'Yaourts nature',d:'Sur un colis de yaourts, la mention indique « À consommer jusqu’au 05/10/2026 ». Nous sommes le 06/10/2026.',a:2,st:'REFUSÉ',e:'C’est une DLC (date limite de consommation) : elle est impérative. Un produit dont la DLC est dépassée ne peut pas être vendu, on le refuse.'},
+ {t:'Compotes',d:'Un carton de compotes a un coin enfoncé et le film plastique déchiré. Tu l’ouvres devant le livreur : les pots sont intacts.',a:1,st:'RÉSERVES',e:'Le produit est vendable mais l’emballage est abîmé : on accepte en écrivant une réserve précise (quel carton, quel dommage).'},
+ {t:'Jambon blanc',d:'Il manque 1 colis de jambon : 4 comptés pour 5 indiqués sur le BL.',a:1,st:'RÉSERVES',e:'On accepte les colis présents et on écrit la réserve : « 1 colis de jambon blanc JB4 manquant (4 reçus sur 5) ».'},
+ {t:'Beurre doux',d:'Cartons propres et fermés. L’étiquette indique « à conserver entre 0 °C et +6 °C ». Le thermomètre affiche +3 °C.',a:0,st:'ACCEPTÉ',e:'Aucun problème : la température respecte l’indication de l’étiquette et l’emballage est intact. On accepte.'},
+ {t:'Lait UHT',d:'La palette de lait est bien filmée, aucun carton humide ni écrasé.',a:0,st:'ACCEPTÉ',e:'Rien à signaler sur l’état. (L’écart de quantité, lui, est à signaler à ta responsable comme vu en mission 3.)'}
+];
+function m4(){
+  const body=shell(4,'<p>Place au contrôle qualitatif. Pour chaque situation, choisis la bonne décision. Réfléchis : est-ce dangereux pour le client ? Est-ce que le produit peut être vendu ?</p>');
+  const labels=['Accepter','Accepter avec réserves','Refuser'];
+  const wrap=el('<div class="incidents"></div>');body.appendChild(wrap);
+  const picks=INC.map(()=>null);const locked=!!S.res[4];
+  INC.forEach((c,i)=>{
+    const card=el(`<div class="card"><span class="stamp">${c.st}</span><h3>${c.t}</h3><p>${c.d}</p><div class="choices">${labels.map((l,k)=>`<button type="button" data-k="${k}">${l}</button>`).join('')}</div><div class="expl">${c.e}</div></div>`);
+    card.querySelectorAll('.choices button').forEach(b=>b.onclick=()=>{if(card.dataset.lock)return;picks[i]=+b.dataset.k;card.querySelectorAll('.choices button').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');});
+    if(locked){card.dataset.lock=1;card.classList.add('show');card.querySelectorAll('.choices button')[c.a].classList.add('right');}
+    wrap.appendChild(card);
+  });
+  body.appendChild(el('<p class="tip" style="margin-top:12px">DLC = « À consommer jusqu’au… » (date impérative). DDM = « À consommer de préférence avant… » (le produit n’est pas dangereux après, mais il peut perdre du goût ou de la texture).</p>'));
+  nextBar(body,4,()=>{
+    if(picks.some(p=>p===null)){alert('Prends une décision pour chaque situation.');return null;}
+    let s=0;
+    wrap.querySelectorAll('.card').forEach((card,i)=>{card.dataset.lock=1;card.classList.add('show');const bs=card.querySelectorAll('.choices button');bs[INC[i].a].classList.add('right');if(picks[i]===INC[i].a)s++;else{bs[picks[i]].classList.add('wrong');card.querySelector('.expl').classList.add('bad');}});
+    return {s,m:INC.length};
+  });
+}
+
+function m5(){
+  const body=shell(5,'<p>Une réserve doit être <b>précise</b> : quel produit, combien, quel dommage. Une réserve vague comme « sous réserve de déballage » ne prouve rien et n’a en pratique pas de valeur.</p>');
+  body.appendChild(el('<h3>Partie A · Quelle réserve est la meilleure ?</h3>'));
+  const qs1=[
+   {q:'Pour le jambon :',o:['« Sous réserve de déballage »','« 1 colis jambon blanc JB4 manquant : 4 reçus / 5 indiqués sur BL »','« Il manque des trucs »'],a:1,e:'La bonne réserve dit quel produit, combien, et compare avec le BL.'},
+   {q:'Pour les compotes :',o:['« Carton abîmé »','« Colis CPF4 : coin enfoncé, film déchiré, pots intacts à l’ouverture »','« À vérifier plus tard »'],a:1,e:'Précise : la référence, la nature du dommage et l’état du contenu.'},
+   {q:'Pour les pizzas :',o:['« 3 colis PZ4F refusés : température mesurée −9 °C, produit ramolli »','« Pizzas pas froides »','« Sous réserve de contrôle »'],a:0,e:'On indique le refus, la quantité, la mesure exacte et le constat.'}
+  ];
+  const c1=qcm(body,qs1,!!S.res[5]);
+  body.appendChild(el('<h3 style="margin-top:18px">Partie B · À toi d’écrire</h3>'));
+  body.appendChild(el('<p>Écris la réserve que tu mettrais sur le BL pour les <b>yaourts</b> (voir mission 4). Puis coche ce que ta réserve contient.</p>'));
+  const ta=el(`<textarea aria-label="Ta réserve pour les yaourts" placeholder="Écris ta réserve ici…">${esc(S.txt5||'')}</textarea>`);body.appendChild(ta);
+  ta.oninput=()=>{S.txt5=ta.value;save();};
+  const checks=['Le nom ou la référence du produit (YN4)','La quantité concernée','Le problème précis (DLC dépassée, avec la date)','La décision (refusé)'];
+  const cl=el(`<div style="margin-top:8px">${checks.map((c,i)=>`<label style="display:block"><input type="checkbox" data-i="${i}"> ${c}</label>`).join('')}</div>`);body.appendChild(cl);
+  body.appendChild(el('<h3 style="margin-top:18px">Partie C · Le délai légal</h3>'));
+  body.appendChild(el('<p>Le livreur est pressé et part avant que tu aies tout noté. Le Code de commerce (article L133-3) prévoit que le destinataire a <b>3 jours, sans compter les jours fériés, après le jour de la réception</b> pour envoyer une protestation motivée au transporteur par lettre recommandée ou acte d’huissier. Sinon, il perd son recours pour avarie ou perte partielle.</p>'));
+  const qs2=[
+   {q:'La livraison a eu lieu le mardi 6 octobre 2026 (aucun jour férié cette semaine). Quel est le dernier jour pour envoyer la lettre recommandée ?',o:['Mercredi 7 octobre','Vendredi 9 octobre','Lundi 12 octobre'],a:1,e:'On compte à partir du lendemain : mercredi (1), jeudi (2), vendredi (3). Dernier jour : vendredi 9 octobre.'},
+   {q:'Pourquoi vaut-il mieux écrire des réserves précises directement sur le BL ?',o:['Pour faire plaisir au livreur','Parce qu’elles servent de preuve que le problème existait à la livraison','Ce n’est pas utile'],a:1,e:'Des réserves précises, écrites au moment de la livraison, prouvent que le dommage existait déjà quand le transporteur a livré.'}
+  ];
+  const c2=qcm(body,qs2,!!S.res[5]);
+  const model=el('<div class="brief hidden"><p><b>Exemple de réserve attendue :</b> « 6 colis YN4 yaourts nature refusés : DLC 05/10/2026 dépassée à la livraison du 06/10/2026. » + date, heure, signature et nom.</p></div>');body.appendChild(model);
+  if(S.res[5]){model.classList.remove('hidden');cl.querySelectorAll('input').forEach(x=>x.disabled=true);}
+  nextBar(body,5,()=>{
+    if(!ta.value.trim()){alert('Écris ta réserve pour les yaourts avant de valider.');return null;}
+    if(!c1.ready()||!c2.ready()){alert('Réponds à toutes les questions (parties A et C).');return null;}
+    const a=c1();const b=c2();
+    const nChk=[...cl.querySelectorAll('input')].filter(x=>x.checked).length;cl.querySelectorAll('input').forEach(x=>x.disabled=true);ta.readOnly=true;
+    model.classList.remove('hidden');
+    return {s:a.s+b.s+nChk,m:a.m+b.m+checks.length};
+  });
+  if(S.res[5])ta.readOnly=true;
+}
+
+function m6(){
+  const body=shell(6,'<p>La livraison est acceptée. Il faut maintenant ranger. Première règle : les produits surgelés et frais d’abord, pour ne pas casser la chaîne du froid.</p>');
+  body.appendChild(el('<h3>Partie A · Chaque produit à sa place</h3>'));
+  const prods=[
+    {p:'Pizzas surgelées (si elles avaient été acceptées)',z:'Chambre froide négative / congélateur'},
+    {p:'Beurre doux',z:'Chambre froide positive / réfrigérateur'},
+    {p:'Jambon blanc',z:'Chambre froide positive / réfrigérateur'},
+    {p:'Lait UHT (bouteilles fermées)',z:'Réserve sèche (température ambiante)'},
+    {p:'Compotes en pots',z:'Réserve sèche (température ambiante)'}
+  ];
+  const zones=['Chambre froide négative / congélateur','Chambre froide positive / réfrigérateur','Réserve sèche (température ambiante)'];
+  const tb=el(`<div class="scroll"><table><thead><tr><th>Produit</th><th>Zone de stockage</th></tr></thead><tbody>${prods.map((x,i)=>`<tr><td>${x.p}</td><td><select data-i="${i}"><option value="">— choisir —</option>${zones.map(z=>`<option>${z}</option>`).join('')}</select></td></tr>`).join('')}</tbody></table></div>`);
+  body.appendChild(tb);
+  body.appendChild(el('<p class="tip">Astuce : lis toujours l’étiquette. Le fabricant y indique les conditions de conservation.</p>'));
+  body.appendChild(el('<h3 style="margin-top:18px">Partie B · La rotation des stocks</h3>'));
+  body.appendChild(el('<p>Dans le rayon, il reste des yaourts aux fraises de livraisons précédentes. Un nouveau lot vient d’arriver. Place les lots de <b>l’avant du rayon</b> (pris en premier par le client) <b>vers le fond</b>.</p>'));
+  const lots=['Lot A · DLC 09/10/2026','Lot B · DLC 12/10/2026','Lot C · DLC 16/10/2026','Lot D (nouveau) · DLC 23/10/2026'];
+  const ord=orderTask(body,lots,!!S.res[6],'1 = tout devant, 4 = tout au fond.');
+  const qs=[
+   {q:'Ranger en mettant devant les produits dont la date est la plus proche s’appelle…',o:['FEFO : premier périmé, premier sorti','LIFO : dernier entré, premier sorti','Le facing'],a:0,e:'FEFO (First Expired, First Out) : le produit qui périme en premier sort en premier. Proche du FIFO (First In, First Out : premier entré, premier sorti).'},
+   {q:'Pourquoi faire la rotation des stocks ?',o:['Pour que le rayon soit joli','Pour vendre les produits avant leur date et limiter le gaspillage et les pertes','Pour que le client prenne le produit le plus récent'],a:1,e:'On limite la démarque (les pertes) et le gaspillage alimentaire, et on protège le client.'}
+  ];
+  const c=qcm(body,qs,!!S.res[6]);
+  const sels=[...tb.querySelectorAll('select')];
+  if(S.res[6])sels.forEach(s=>{s.value=prods[+s.dataset.i].z;s.disabled=true;s.parentElement.classList.add('cellok');});
+  nextBar(body,6,()=>{
+    if(sels.some(s=>!s.value)){alert('Choisis une zone pour chaque produit.');return null;}
+    if(!ord.ready()||!c.ready()){alert('Termine le classement des lots et les deux questions.');return null;}
+    const o=ord();const q=c();
+    let s=0;sels.forEach(sel=>{const g=prods[+sel.dataset.i].z;sel.disabled=true;if(sel.value===g){s++;sel.parentElement.classList.add('cellok');}else{sel.parentElement.classList.add('cellko');sel.insertAdjacentHTML('afterend',`<div class="tip">Réponse : ${g}</div>`);}});
+    return {s:s+o.s+q.s,m:sels.length+o.m+q.m};
+  });
+}
+
+function m7(){
+  const body=shell(7,'<p>Dernière étape : un quiz pour vérifier ce que tu as retenu, puis ton auto-évaluation. Montre ensuite cet écran à ton professeur.</p>');
+  const qs=[
+   {q:'Le document que l’on signe à l’arrivée du camion est…',o:['Le bon de commande','Le bon de livraison','La facture'],a:1,e:'On signe le bon de livraison, avec les réserves si besoin.'},
+   {q:'Quand faut-il compter les colis ?',o:['Le lendemain','Devant le livreur, avant de signer','Jamais, on fait confiance'],a:1,e:'Le contrôle se fait devant le livreur pour pouvoir écrire les réserves avant sa signature.'},
+   {q:'« À consommer jusqu’au… » correspond à…',o:['Une DDM','Une DLC','Un numéro de lot'],a:1,e:'DLC : date impérative.'},
+   {q:'Une réserve efficace est…',o:['Courte et vague','Précise : produit, quantité, problème','Écrite au crayon à papier au dos du BL'],a:1,e:'Précise et lisible, sur le BL, datée et signée.'},
+   {q:'Un produit surgelé livré à −9 °C…',o:['Est accepté','Est refusé','Est remis au congélateur pour le vendre'],a:1,e:'La chaîne du froid est rompue (règle : −18 °C, remontées brèves de 3 °C maximum).'},
+   {q:'Après la réception, on range en premier…',o:['Les produits d’entretien','Les surgelés et les produits frais','Les boissons'],a:1,e:'Pour ne pas rompre la chaîne du froid.'},
+   {q:'Si l’on n’a pas pu écrire de réserve, on peut encore protester auprès du transporteur…',o:['Dans les 3 jours (hors jours fériés), par lettre recommandée','Dans les 30 jours par SMS','Jamais'],a:0,e:'Article L133-3 du Code de commerce : 3 jours sans compter les jours fériés, par lettre recommandée ou acte d’huissier.'},
+   {q:'FEFO signifie qu’on vend d’abord…',o:['Le produit le plus récent','Le produit qui périme en premier','Le produit le moins cher'],a:1,e:'First Expired, First Out.'}
+  ];
+  const c=qcm(body,qs,!!S.res[7]);
+  const bilan=el('<div class="bilan hidden"></div>');
+  nextBar(body,7,c,()=>showBilan());
+  body.appendChild(bilan);
+  const nx=body.querySelector('.nx');nx.textContent='Voir mon bilan';nx.onclick=()=>{bilan.scrollIntoView({behavior:'smooth'});};
+  function showBilan(){
+    bilan.classList.remove('hidden');
+    const t=total();
+    const skills=['Je connais le rôle du bon de commande, du bon de livraison et de la facture','Je sais faire un contrôle quantitatif','Je sais faire un contrôle qualitatif (état, dates, température)','Je sais rédiger une réserve précise','Je sais ranger en respectant la chaîne du froid et la rotation'];
+    const lv=['Pas encore','En cours','Acquis'];
+    bilan.innerHTML=`<h2 style="margin-top:26px">Bilan de ${esc(S.name)}</h2>
+      <div class="scroll"><table><tbody>${MISSIONS.slice(1).map((m,k)=>{const r=S.res[k+1];return `<tr><td>${k+1}. ${m.t}</td><td>${r?r.s+' / '+r.m:'—'}</td></tr>`}).join('')}
+      <tr><td><b>Total</b></td><td><b>${t.s} / ${t.m}</b> (${t.m?Math.round(t.s/t.m*100):0} %)</td></tr></tbody></table></div>
+      <h3 style="margin-top:20px">Mon auto-évaluation</h3>
+      <div>${skills.map((s,i)=>`<div class="eval-row"><span>${s}</span><span class="lv">${lv.map((l,k)=>`<button type="button" data-i="${i}" data-k="${k}" class="${S.evals[i]===k?'sel':''}">${l}</button>`).join('')}</span></div>`).join('')}</div>
+      <div class="actions no-print"><button class="btn" type="button" id="pr">Imprimer mon bilan</button><button class="btn ghost" type="button" id="rs">Effacer et recommencer</button></div>
+      <p class="tip">Rempli le ${new Date().toLocaleDateString('fr-FR')}.</p>`;
+    bilan.querySelectorAll('.lv button').forEach(b=>b.onclick=()=>{S.evals[b.dataset.i]=+b.dataset.k;save();b.parentElement.querySelectorAll('button').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');});
+    bilan.querySelector('#pr').onclick=()=>window.print();
+    bilan.querySelector('#rs').onclick=()=>{if(confirm('Effacer toutes tes réponses et recommencer ?')){S={name:'',cur:0,res:{},evals:{}};save();render();window.scrollTo({top:0});}};
+  }
+  if(S.res[7])showBilan();
+}
+
+function teacher(){
+  app.appendChild(el(`<details class="teacher"><summary>Espace professeur</summary>
+  <p><b>Public :</b> CAP Équipier polyvalent du commerce, 1<sup>re</sup> année. <b>Bloc 1</b> « Recevoir et suivre les commandes ». <b>Durée :</b> environ 2 h (5 + 10 + 15 + 25 + 20 + 15 + 15 + 15 min).</p>
+  <p><b>Compétences travaillées :</b> identifier les documents commerciaux de la réception, réaliser les contrôles quantitatif et qualitatif, formuler des réserves, ranger en respectant la chaîne du froid et la rotation des stocks.</p>
+  <p><b>Fonctionnement :</b> la progression de chaque élève est enregistrée dans son propre navigateur uniquement (vous ne recevez pas les résultats). L’écran de bilan final récapitule les scores et l’auto-évaluation, à montrer ou imprimer. Le magasin, le grossiste, les personnes et les numéros de documents sont fictifs.</p>
+  <p><b>Point de vigilance :</b> la conduite à tenir face à un surplus ou une erreur de référence dépend des procédures de chaque enseigne ; l’activité retient « signaler au responsable ».</p>
+  <p><b>Sources utilisées :</b></p>
+  <ul class="src">
+   <li>Code de commerce, art. L133-3 (délai de 3 jours pour la protestation motivée), Légifrance : <a href="https://www.legifrance.gouv.fr/codes/id/LEGIARTI000020899366/2009-07-25/" target="_blank" rel="noopener">legifrance.gouv.fr</a></li>
+   <li>DGCCRF, « DLC et DDM : ce que vous devez savoir », mis à jour le 17/12/2025 : <a href="https://www.economie.gouv.fr/dgccrf/les-fiches-pratiques/date-limite-de-consommation-et-date-de-durabilite-minimale-ce-que-vous" target="_blank" rel="noopener">economie.gouv.fr</a></li>
+   <li>Directive 89/108/CEE sur les aliments surgelés (−18 °C, tolérance de 3 °C), synthèse EUR-Lex : <a href="https://eur-lex.europa.eu/FR/legal-content/summary/quick-frozen-food.html" target="_blank" rel="noopener">eur-lex.europa.eu</a></li>
+   <li>Blocs de compétences du CAP EPC (RNCP40994), fiche Intercarif : <a href="https://www.intercariforef.org/formations/cap-equipier-polyvalent-du-commerce/gip-formation-continue-et-insertion-professionnelle-paris/formation-14_AF_0000187482_SE_0001757057.html" target="_blank" rel="noopener">intercariforef.org</a></li>
+   <li>Valeur des réserves et protestation motivée, CMS Francis Lefebvre Avocats : <a href="https://cms.law/en/fra/news-information/quelles-precautions-prendre-a-l-egard-du-transporteur-a-reception-de-marchandises-endommagees" target="_blank" rel="noopener">cms.law</a></li>
+  </ul></details>`));
+}
+
+const R=[m0,m1,m2,m3,m4,m5,m6,m7];
+function render(){app.innerHTML='';if(!S.name)S.cur=0;R[S.cur]();teacher();header();}
+render();
+})();
+</script>
+</body>
+</html>
